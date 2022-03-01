@@ -25,4 +25,4 @@ Example:
     
 ### Notices:
 
-    display_func in the utility.display.py file can only display datasets in up to 4 clusters.
+    display_func in the utility.display.py file can only display datasets in up to 5 clusters.
