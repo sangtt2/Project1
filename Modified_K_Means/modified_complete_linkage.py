@@ -10,6 +10,7 @@ class Cluster():
         self.index = []  # index of the clusters, starts from 0
         self.number = data_number  # number of clusters in the cluster set
         self.labels = [0] * data_number
+
     def assign_label(self):
         for i in range(len(self.index)):
             for j in self.index[i]:
@@ -83,6 +84,38 @@ def sum_distances(centers, labels, dataset):
         add = distance(dataset[i], centers[labels[i]])
         dis += add
     return dis
+def calc_diameter_of_cluster(cluster):
+    res = 0.0
+    l = len(cluster)
+    for i in range(l):
+        for j in range(l):
+            res = max(res, distance(cluster[i], cluster[j]))
+    return res
+
+def calc_diameter_of_dataset(dataset, k, labels):
+    res = 0.0
+    x = []
+    diameter_each_cluster = []
+    l = len(labels)
+    for _ in range(k):
+        x.append([])
+    for i in range(l):
+        x[labels[i]].append(dataset[i])
+    for i in range(k):
+        diameter_each_cluster.append(calc_diameter_of_cluster(x[i]))
+    min_diameter = min(diameter_each_cluster)
+    average_diameter = sum(diameter_each_cluster)/k
+    max_diameter = max(diameter_each_cluster)
+    return (min_diameter, average_diameter, max_diameter)
+
+def cal_size_of_cluster(k, labels):
+    x = [0 for _ in range(k)]
+    for i in labels:
+        x[i] += 1
+    min_size = min(x)
+    average_size = sum(x) / k
+    max_size = max(x)
+    return (min_size, average_size, max_size)
 
 def main():
     args = ast.literal_eval(str(sys.argv))
@@ -113,13 +146,15 @@ def main():
     print(l)
     print("Number of clusters: ")
     print(K)
-    print("Max diamater: ")
-    print(alg2)
-    print("Max size: ")
-    print(alg3)
+    print("Max diameter and max size constraint: ")
+    print(alg2, alg3)
+    print("Min diamater, Average diameter, Max diameter: ")
+    print(calc_diameter_of_dataset(dataset.eg, K, labels))
+    print("Min size, Average size, Max size: ")
+    print(cal_size_of_cluster(K, labels))
     print("Sum of all distance: ")
     print(sum_distances(centers, labels, X))
-    # display_func(X, labels)
+    #display_func(X, labels)
 if __name__ == "__main__":
     main()
 

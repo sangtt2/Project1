@@ -13,20 +13,20 @@ def init_centers(X, k):
 def find_labels(X, centers, max_size):
     K = centers.shape[0]
     L = len(X)
-    if L > K * max_size:
-        messange = "Value of max size is more than " + str(L//(K))
-        raise ValueError(messange)
+    # if L > K * max_size:
+    #     messange = "Value of max size is more than " + str(L//(K))
+    #     raise ValueError(messange)
     D = np.argsort(cdist(X, centers), axis=1).tolist()
     curr_size = [0] * K
     labels = []
     for i in range(len(D)):
         index = 0
-        while curr_size[D[i][index]] >= max_size:
+        sorted_cluster = np.argsort(cdist(X[i].reshape(1,-1), centers), axis=1).reshape(-1,).tolist()
+        while curr_size[sorted_cluster[index]] >= max_size:
             index += 1
-        curr_size[D[i][index]] += 1
-        labels.append(D[i][index])
+        curr_size[sorted_cluster[index]] += 1
+        labels.append(sorted_cluster[index])
     return np.array(labels)
-
 
 
 def find_centers(X, labels, K):
@@ -72,40 +72,55 @@ def calc_diameter_of_cluster(cluster):
         for j in range(l):
             res = max(res, distance(cluster[i], cluster[j]))
     return res
+
 def calc_diameter_of_dataset(dataset, k, labels):
     res = 0.0
     x = []
+    diameter_each_cluster = []
     l = len(labels)
     for _ in range(k):
         x.append([])
     for i in range(l):
         x[labels[i]].append(dataset[i])
     for i in range(k):
-        tmp = calc_diameter_of_cluster(x[i])
-        res = max(tmp, res)
-    return res
+        diameter_each_cluster.append(calc_diameter_of_cluster(x[i]))
+    min_diameter = min(diameter_each_cluster)
+    average_diameter = sum(diameter_each_cluster)/k
+    max_diameter = max(diameter_each_cluster)
+    return (min_diameter, average_diameter, max_diameter)
+
+def cal_size_of_cluster(k, labels):
+    x = [0 for _ in range(k)]
+    for i in labels:
+        x[i] += 1
+    min_size = min(x)
+    average_size = sum(x) / k
+    max_size = max(x)
+    return (min_size, average_size, max_size)
+
 def main():
     args = ast.literal_eval(str(sys.argv))
     dataset = Data()
     input_func(args[1], dataset)
-    alg1 = args[2]
-    alg2 = args[3]
-    K = int(alg1)
-    size = int(alg2)
     X = np.array(dataset.eg)
+    number_dataset = len(dataset.eg)
+    alg1 = args[2]
+    #alg2 = args[3]
+    size = int(alg1)
+    K = number_dataset // size + 1
     centers, labels = size_constraint_kmeans(X, K, size)
     print("Number of dataset: ")
-    print(len(dataset.eg))
+    print(number_dataset)
     print("Number of clusters: ")
     print(K)
-    print("Diameter: ")
-    print(calc_diameter_of_dataset(dataset.eg, K, labels))
-    print("Max size: ")
+    print("Max size constraint: ")
     print(size)
+    print("Min diameter, Average diameter, Max diameter: ")
+    print(calc_diameter_of_dataset(dataset.eg, K, labels))
+    print("Min size, Average size, Max size: ")
+    print(cal_size_of_cluster(K, labels))
     print("Sum of all distances: ")
     print(sum_distances(centers, labels, dataset.eg))
 
-
-    # display_func(X, labels)
 if __name__ == '__main__':
     main()
