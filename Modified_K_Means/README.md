@@ -1,4 +1,4 @@
-###Run "size_constraint_k_means.py" file
+### Run "size_constraint_k_means.py" file
 Require 3 parameters in order: 
 
     1. Dataset file
@@ -10,7 +10,7 @@ Example:
     
     python3 size_constraint_k_means.py Sample/sample1.txt 121
     
-###Run "modified_complete_linkage.py" file
+### Run "modified_complete_linkage.py" file
 Require 3 parameters in order: 
 
     1. Dataset file
@@ -23,6 +23,6 @@ Example:
 
     python3 modified_complete_linkage.py Sample/sample1.txt 111 121
     
-###Notices:
+### Notices:
 
     display_func in the utility.display.py file can only display datasets in up to 4 clusters.
