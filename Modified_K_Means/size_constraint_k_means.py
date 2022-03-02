@@ -5,6 +5,8 @@ from utility.display import display_func
 from scipy.spatial.distance import cdist
 from default_k_means import generate_centers
 from utility.input_file import input_func, Data
+from utility.calc_size import cal_size_of_cluster
+from utility.calc_diameter import distance, calc_diameter_of_dataset
 
 def init_centers(X, k):
     # select centers by default k means algorithm
@@ -50,14 +52,6 @@ def size_constraint_kmeans(X, K, max_size):
             break
     return centers, labels
 
-def distance(point1, point2):
-    dis = 0.0
-    # eliminate the class attribute
-    for i in range(len(point1)):
-        add = (point1[i] - point2[i]) ** 2
-        dis += add
-    return dis ** 0.5
-
 def sum_distances(centers, labels, dataset):
     dis = 0.0
     for i in range(len(labels)):
@@ -73,30 +67,7 @@ def calc_diameter_of_cluster(cluster):
             res = max(res, distance(cluster[i], cluster[j]))
     return res
 
-def calc_diameter_of_dataset(dataset, k, labels):
-    res = 0.0
-    x = []
-    diameter_each_cluster = []
-    l = len(labels)
-    for _ in range(k):
-        x.append([])
-    for i in range(l):
-        x[labels[i]].append(dataset[i])
-    for i in range(k):
-        diameter_each_cluster.append(calc_diameter_of_cluster(x[i]))
-    min_diameter = min(diameter_each_cluster)
-    average_diameter = sum(diameter_each_cluster)/k
-    max_diameter = max(diameter_each_cluster)
-    return (min_diameter, average_diameter, max_diameter)
 
-def cal_size_of_cluster(k, labels):
-    x = [0 for _ in range(k)]
-    for i in labels:
-        x[i] += 1
-    min_size = min(x)
-    average_size = sum(x) / k
-    max_size = max(x)
-    return (min_size, average_size, max_size)
 
 def main():
     args = ast.literal_eval(str(sys.argv))

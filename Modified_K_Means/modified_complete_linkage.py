@@ -2,6 +2,8 @@ import sys
 import ast
 import numpy as np
 from utility.input_file import input_func, Data
+from utility.calc_size import cal_size_of_cluster
+from utility.calc_diameter import distance, calc_diameter_of_dataset
 from utility.display import display_func
 
 class Cluster():
@@ -62,14 +64,7 @@ def find_max(cluster1, cluster2):
                 max = dis
     return max
 
-# find distance between 2 points
-def distance(point1, point2):
-    dis = 0.0
-    # eliminate the class attribute
-    for i in range(len(point1)):
-        add = (point1[i] - point2[i]) ** 2
-        dis += add
-    return dis ** 0.5
+
 
 def find_centers(X, labels, K):
     centers = np.zeros((K, X.shape[1]))
@@ -84,38 +79,8 @@ def sum_distances(centers, labels, dataset):
         add = distance(dataset[i], centers[labels[i]])
         dis += add
     return dis
-def calc_diameter_of_cluster(cluster):
-    res = 0.0
-    l = len(cluster)
-    for i in range(l):
-        for j in range(l):
-            res = max(res, distance(cluster[i], cluster[j]))
-    return res
 
-def calc_diameter_of_dataset(dataset, k, labels):
-    res = 0.0
-    x = []
-    diameter_each_cluster = []
-    l = len(labels)
-    for _ in range(k):
-        x.append([])
-    for i in range(l):
-        x[labels[i]].append(dataset[i])
-    for i in range(k):
-        diameter_each_cluster.append(calc_diameter_of_cluster(x[i]))
-    min_diameter = min(diameter_each_cluster)
-    average_diameter = sum(diameter_each_cluster)/k
-    max_diameter = max(diameter_each_cluster)
-    return (min_diameter, average_diameter, max_diameter)
 
-def cal_size_of_cluster(k, labels):
-    x = [0 for _ in range(k)]
-    for i in labels:
-        x[i] += 1
-    min_size = min(x)
-    average_size = sum(x) / k
-    max_size = max(x)
-    return (min_size, average_size, max_size)
 
 def main():
     args = ast.literal_eval(str(sys.argv))

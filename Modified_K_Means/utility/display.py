@@ -4,7 +4,7 @@ import numpy as np
 
 def display_func(X, label):
     K = np.amax(label) + 1
-    # K = 4
+    # K = 5
     X0 = X[label == 0, :]
     X1 = X[label == 1, :]
     X2 = X[label == 2, :]
