@@ -59,15 +59,6 @@ def sum_distances(centers, labels, dataset):
         dis += add
     return dis
 
-def calc_diameter_of_cluster(cluster):
-    res = 0.0
-    l = len(cluster)
-    for i in range(l):
-        for j in range(l):
-            res = max(res, distance(cluster[i], cluster[j]))
-    return res
-
-
 
 def main():
     args = ast.literal_eval(str(sys.argv))
